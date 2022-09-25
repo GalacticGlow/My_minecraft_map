@@ -48,9 +48,9 @@ class Mapmanager():
             'end_stone_brick' : (218/255, 224/255, 162/255, 1),
             'obsidian' : (15/255, 10/255, 24/255, 1),
             'magenta_glass' : (178/255, 76/255, 216/255, 0.2),
-            'wood' : (1, 1, 1, 1)
+            'wood' : (191/255, 126/255, 42/255, 1)
         }
-        self.files = ['obsidian.txt', 'purpur_pillar.txt', 'end_stone_brick.txt', 'wood.txt']
+        self.files = ['obsidian.txt', 'end_stone_brick.txt', 'wood.txt']
  
     def startNew(self):
         self.land = render.attachNewNode("Land")
@@ -75,10 +75,13 @@ class Mapmanager():
 
     def del_pos_from_file(self, filename, pos):
         with open(filename, 'r+') as file:
-            lines = file.readlines()
+            lines = self.converter(filename)
+            filtered_lines = list()
+            filtered_lines = [i for i in lines if i not in filtered_lines and i != pos]
             file.seek(0)
             file.truncate()
-            file.writelines(lines[:-1])
+            for line in filtered_lines:
+                file.writelines(str(line)+'\n')
 
     def delBlock(self, pos):
         blocks = self.findBlocks(pos)
@@ -161,8 +164,6 @@ class Mapmanager():
                     elif pos[0] > 84: #end ship
                         if pos in self.converter('obsidian.txt'):
                             self.addBlock(pos, self.colors_dict['obsidian'])
-                        elif pos in self.converter('purpur_pillar.txt'):
-                            self.addBlock(pos, self.colors_dict['purpur_pillar'])
                         elif pos in self.converter('end_stone_brick.txt'):
                             self.addBlock(pos, self.colors_dict['end_stone_brick'])
                         elif pos in self.converter('wood.txt'):
